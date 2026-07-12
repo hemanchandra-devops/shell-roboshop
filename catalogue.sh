@@ -86,11 +86,12 @@ dnf install mongodb-mongosh -y &>>$LOGS_FILE
 VALIDATE $? "install mongodb-client"
 
 INDEX=$(mongosh --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
-if [ $INDEX -le 0 ];then
-    mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOGS_FILE
+
+if [ "$INDEX" -eq -1 ]; then
+    mongosh --host "$MONGODB_HOST" </app/db/master-data.js &>>"$LOGS_FILE"
     VALIDATE $? "Load Master Data of the List of products"
 else
-    echo -e "$Y Already Loaded Master Data of the List of products ...$N Skipping" | tee -a "$LOGS_FILE" 
+    echo -e "$Y Already Loaded Master Data of the List of products ...$N Skipping" | tee -a "$LOGS_FILE"
 fi
 
 systemctl restart catalogue &>>$LOGS_FILE
