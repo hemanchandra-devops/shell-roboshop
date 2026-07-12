@@ -33,34 +33,34 @@ VALIDATE(){
 }
 
 dnf module disable nginx -y &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Disable default Nginx"
 
 dnf module enable nginx:1.24 -y &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Enable Nginx 1.24 version"
 
 dnf install nginx -y &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Install Nginx"
 
 systemctl enable nginx &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS" 
+VALIDATE $? "Enable Nginx" 
 
 systemctl start nginx &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Start Nginx"
 
 rm -rf /usr/share/nginx/html/* &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Remove default html code"
 
 curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Download frontend code"
 
 cd /usr/share/nginx/html &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Move to the nginx htlm dir"
 
 unzip /tmp/frontend.zip &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Unzip the frontend code"
 
 cp $SCRIPT_DIR/nginx.conf  /etc/nginx/nginx.conf &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Create Nginx Reverse Proxy Configuration"
 
 systemctl restart nginx &>>$LOGS_FILE
-VALIDATE $? "Install NodeJS"
+VALIDATE $? "Restart nginx"
