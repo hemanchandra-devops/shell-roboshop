@@ -59,7 +59,7 @@ VALIDATE $? "Application files may already exist"
 unzip /tmp/payment.zip &>>$LOGS_FILE
 VALIDATE $? "Unzip the payment code" 
 
-npm install &>>$LOGS_FILE
+pip3 install -r requirements.txt &>>$LOGS_FILE
 VALIDATE $? "Download the dependencies" 
 
 cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>$LOGS_FILE
