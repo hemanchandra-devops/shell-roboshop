@@ -12,6 +12,7 @@ mkdir -p $LOGS_FOLDER
 SCRIPIT_NAME=$(echo $0 | cut -d "." -f1)
 LOGS_FILE="$LOGS_FOLDER/$SCRIPIT_NAME.log"
 MONGODB_HOST=mongodb.heman.icu
+MYSQL_HOST=mysql.heman.icu
 SCRIPT_DIR=$PWD
 
 echo "Script started executed at : $(date)" | tee -a $LOGS_FILE
@@ -81,12 +82,12 @@ VALIDATE $? "Start the shipping service"
 dnf install mysql -y &>>$LOGS_FILE
 VALIDATE $? "install mysql client"
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 -e "USE cities;" &>/dev/null
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e "USE cities;" &>/dev/null
 
 if [ $? -ne 0 ]; then
-    mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/schema.sql &>>"$LOGS_FILE"
-    mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/app-user.sql &>>"$LOGS_FILE"
-    mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/master-data.sql &>>"$LOGS_FILE"
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>"$LOGS_FILE"
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql &>>"$LOGS_FILE"
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>"$LOGS_FILE"
 
     VALIDATE $? "load schema to the Database."
 else
