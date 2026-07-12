@@ -85,8 +85,13 @@ VALIDATE $? "setup MongoDB repo service"
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 VALIDATE $? "install mongodb-client"
 
-mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOGS_FILE
-VALIDATE $? "Load Master Data of the List of products"
+INDEX=$(mongosh --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+if [ $INDEX -le 0 ];then
+    mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOGS_FILE
+    VALIDATE $? "Load Master Data of the List of products"
+else
+    echo -e "$Y Already Loaded Master Data of the List of products ...$N Skipping" | tee -a "$LOGS_FILE" 
+fi
 
 systemctl restart catalogue &>>$LOGS_FILE
 VALIDATE $? "Restart the catalogue service"
