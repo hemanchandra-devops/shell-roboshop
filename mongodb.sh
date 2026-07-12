@@ -39,3 +39,9 @@ VALIDATE $? "Enable MongoDB"
 
 systemctl start mongod &>>$LOGS_FILE
 VALIDATE $? "Start MongoDB"
+
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf &>>$LOGS_FILE
+VALIDATE $? "Update listen address"
+
+systemctl restart mongod &>>$LOGS_FILE
+VALIDATE $? "Restart the mongod service"
