@@ -40,11 +40,15 @@ VALIDATE $? "Enable RabbitMQ Service"
 systemctl start rabbitmq-server &>>$LOGS_FILE
 VALIDATE $? "Start RabbitMQ Service"
 
-rabbitmqctl add_user roboshop roboshop123 &>>$LOGS_FILE
-VALIDATE $? "create one user for the application"
+if ! id roboshop &>>"$LOGS_FILE"; then
+    rabbitmqctl add_user roboshop roboshop123 &>>$LOGS_FILE
+    VALIDATE $? "create one user for the application"
+    rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOGS_FILE
+    VALIDATE $? "Set permissions for user"  
+else
+    echo -e "$Y Already Roboshop user exists ...$N Skipping" | tee -a "$LOGS_FILE"
+fi
 
-rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOGS_FILE
-VALIDATE $? "Set permissions for user"
 
 systemctl restart rabbitmq-server &>>$LOGS_FILE
 VALIDATE $? "Restart the RabbitMQ service"
