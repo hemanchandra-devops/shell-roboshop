@@ -85,7 +85,7 @@ VALIDATE $? "setup MongoDB repo service"
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 VALIDATE $? "install mongodb-client"
 
-INDEX=$(mongosh --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+INDEX=$(mongosh --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')" | grep -qv '^-1$')
 
 if [ "$INDEX" -eq -1 ]; then
     mongosh --host "$MONGODB_HOST" </app/db/master-data.js &>>"$LOGS_FILE"
