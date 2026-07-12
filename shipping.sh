@@ -82,7 +82,7 @@ VALIDATE $? "Start the shipping service"
 dnf install mysql -y &>>$LOGS_FILE
 VALIDATE $? "install mysql client"
 
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e "USE cities;" &>/dev/null
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e "USE $cities;" &>/dev/null
 
 if [ $? -ne 0 ]; then
     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>"$LOGS_FILE"
@@ -93,5 +93,6 @@ if [ $? -ne 0 ]; then
 else
     echo -e "$Y Already loaded schema to the Database ...$N Skipping" | tee -a "$LOGS_FILE"
 fi
+
 systemctl restart shipping &>>$LOGS_FILE
 VALIDATE $? "Restart the shipping service"
