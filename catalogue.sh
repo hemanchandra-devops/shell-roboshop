@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -e
 
 R="\e[31m"
 G="\e[32m"
@@ -42,11 +42,11 @@ dnf install nodejs -y &>>$LOGS_FILE
 VALIDATE $? "Install NodeJS"
 
 id roboshop &>>$LOGS_FILE
-if [ $? -ne 0 ];then
+if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
     VALIDATE $? "Add application User"
 else
-    echo -e "$Y Already Roboshop user exists ...$N Skipping" | tee -a $LOGS_FILE
+    echo -e "$Y Already Roboshop user exists...$N Skipping"
 fi
 
 mkdir -p /app &>>$LOGS_FILE
