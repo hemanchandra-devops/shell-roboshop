@@ -85,9 +85,9 @@ VALIDATE $? "setup MongoDB repo service"
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 VALIDATE $? "install mongodb-client"
 
-INDEX=$(mongosh --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')" | grep -qv '^-1$')
+DB_EXISTS=$(mongosh "$MONGODB_HOST" --quiet --eval "db.getMongo().getDBNames().includes('catalogue')")
 
-if [ "$INDEX" -eq -1 ]; then
+if [ "$DB_EXISTS" = "false" ]; then
     mongosh --host "$MONGODB_HOST" </app/db/master-data.js &>>"$LOGS_FILE"
     VALIDATE $? "Load Master Data of the List of products"
 else
