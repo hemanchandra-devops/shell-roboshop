@@ -82,17 +82,30 @@ VALIDATE $? "Start the shipping service"
 dnf install mysql -y &>>$LOGS_FILE
 VALIDATE $? "install mysql client"
 
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e "USE $cities;" &>/dev/null
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>"$LOGS_FILE"
+VALIDATE $? "Load schema to database"
 
-if [ $? -ne 0 ]; then
-    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>"$LOGS_FILE"
-    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql &>>"$LOGS_FILE"
-    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>"$LOGS_FILE"
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql &>>"$LOGS_FILE"
+VALIDATE $? "Create application user"
 
-    VALIDATE $? "load schema to the Database."
-else
-    echo -e "$Y Already loaded schema to the Database ...$N Skipping" | tee -a "$LOGS_FILE"
-fi
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>"$LOGS_FILE"
+VALIDATE $? "Load master data"
+
+
+# mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e "USE cities;"
+
+# if [ $? -ne 0 ]; then
+#     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>"$LOGS_FILE"
+#     VALIDATE $? "Load schema to database"
+
+#     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql &>>"$LOGS_FILE"
+#     VALIDATE $? "Create application user"
+
+#     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>"$LOGS_FILE"
+#     VALIDATE $? "Load master data"
+# else
+#     echo -e "$Y Already loaded schema to the Database ...$N Skipping" | tee -a "$LOGS_FILE"
+# fi
 
 systemctl restart shipping &>>$LOGS_FILE
 VALIDATE $? "Restart the shipping service"
