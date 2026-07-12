@@ -31,3 +31,36 @@ VALIDATE(){
         echo -e "$G $2 ... $N Success" | tee -a $LOGS_FILE
     fi
 }
+
+dnf module disable nginx -y &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+dnf module enable nginx:1.24 -y &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+dnf install nginx -y &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+systemctl enable nginx &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS" 
+
+systemctl start nginx &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+rm -rf /usr/share/nginx/html/* &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+cd /usr/share/nginx/html &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+unzip /tmp/frontend.zip &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+cp $SCRIPT_DIR/nginx.conf  /etc/nginx/nginx.conf &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"
+
+systemctl restart nginx &>>$LOGS_FILE
+VALIDATE $? "Install NodeJS"

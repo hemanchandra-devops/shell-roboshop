@@ -81,7 +81,7 @@ VALIDATE $? "Start the shipping service"
 dnf install mysql -y &>>$LOGS_FILE
 VALIDATE $? "install mysql client"
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 -e "USE $cities;" &>/dev/null
+mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 -e "USE cities;" &>/dev/null
 
 if [ $? -ne 0 ]; then
     mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/schema.sql &>>"$LOGS_FILE"
